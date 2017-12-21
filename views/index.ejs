@@ -1,0 +1,62 @@
+<% include ./partials/header %>
+
+<div class="container">
+        		<h1 class="text-center">STOCK REPORT</h1>
+		    <table class="table table-striped table-bordered table-hover">
+		        <thead>
+				    <tr>
+				      
+				      <th style="width: 5%">S.NBR</th>
+				      <th style="width: 5%">LOT</th>
+				      <th style="width: 5%">C/B</th>
+				      <th style="width: 5%">PKGS</th>
+				      <th style="width: 5%">W/PKGS</th>
+				      <th style="width: 5%">GRADE</th>
+				      <th style="width: 20%">GARDEN</th>
+				      <th style="width: 5%">KGS</th>
+				      <th style="width: 5%">RATE</th>
+				      <th style="width: 10%">B-PKGS</th>
+				      <th style="width: 10%">B-KGS</th>
+				      <th style="width: 5%">W/H</th>
+				      <th style="width: 5%">A/C</th>
+				      <th style="width: 5%">EDIT</th>
+				      <th style="width: 5%">D/O</th>
+				      <th style="width: 5%">DELETE</th>
+				      
+				      
+				    </tr>
+		  		</thead>
+
+		  		<tbody>
+				 <% stocks.forEach(function(stock){ %>
+				 	<tr>
+				      <td><%= stock.snbr %></td>
+				      <td><%= stock.lot %></td>
+				      <td><%= stock.cb %></td>
+				      <td><%= stock.pkgs %></td>
+				      <td><%= stock.wpkgs %></td>
+				      <td><%= stock.grade %></td>
+				      <td><%= stock.garden %></td>
+				      <td><%= stock.kgs %></td>
+				      <td><%= stock.rate %></td>
+				      <td><strong><%= stock.bpkgs %></strong></td>
+				      <td><strong><%= stock.bkgs %></strong></td>
+				      <td><%= stock.wh %></td>
+				      <td><%=  stock.ac %></td>
+				      <td><a class="edit btn btn-xs btn-success" href="/stocks/<%= stock._id %>/edit"><i class="fa fa-pencil-square" aria-hidden="true"></i></a></td>
+				      <td><a class="edit btn btn-xs btn-info" href="/stocks/<%= stock._id %>/do"><i class="fa fa-indent" aria-hidden="true"></i></a></td>
+				      <td>
+					  	<form class="delete" method="POST" action="/stocks/<%= stock._id %>?_method=DELETE">
+				              <button class="btn btn-xs btn-danger"><i class="fa fa-minus-square" aria-hidden="true"></i></button>
+				        </form>
+					  </td>
+					  
+				    </tr>
+				<% })  %>
+
+				</tbody>		
+
+		    </table>
+
+	    </div>
+<% include ./partials/footer %>

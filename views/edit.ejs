@@ -1,0 +1,57 @@
+<% include ./partials/header %>
+
+<div class="container">
+
+        	<h1 class="text-center">Edit Stock</h1>
+        	<form action="/stocks/<%=stock._id%>?_method=PUT" method="POST">
+	        	<div class= "row">
+	        		<div class= "col-md-2 form-group">
+	        			<label for="stock[snbr]">S.Nbr</label>
+	        			<input class="form-control" type="text" name="stock[snbr]" value = "<%= stock.snbr %>" required>
+	        		</div>
+	        		<div class= "col-md-2 form-group">
+	        			<label for="stock[lot]">Lot Number</label>
+	        			<input class="form-control" type="text" name="stock[lot]" value = "<%= stock.lot %>">
+	        		</div>
+	        		<div class= "col-md-2 form-group">
+	        			<label for="stock[cb]">C/B</label>
+	        			<input class="form-control" type="text" name="stock[cb]" value = "<%= stock.cb %>">
+	        		</div>
+	        		<div class= "col-md-2 form-group">
+	        			<label for="stock[grade]">Grade</label>
+	        			<input class="form-control" type="text" name="stock[grade]" value = "<%= stock.grade %>">
+	        		</div>
+	        		<div class= "col-md-4 form-group">
+	        			<label for="stock[garden]">Garden</label>
+	        			<input class="form-control" type="text" name="stock[garden]" value = "<%= stock.garden %>" required>
+	        		</div>
+		        </div>
+	        	
+	        	<div class="row">
+		        	<div class= "col-md-2 form-group">
+		        		<label for="stock[pkgs]">Packages</label>
+		        		<input class="form-control" type="text" name="stock[pkgs]" value = "<%= stock.pkgs %>" required>
+		        	</div>
+		        	<div class= "col-md-2 form-group">
+		        		<label for="stock[wpkgs]">Weight per bag</label>
+		        		<input class="form-control" type="text" name="stock[wpkgs]" value = "<%= stock.wpkgs %>" required>
+		        	</div>
+		        	<div class= "col-md-2 form-group">
+		        		<label for="stock[rate]">Rate</label>
+		        		<input class="form-control" type="text" name="stock[rate]" value = "<%= stock.rate %>">
+		        	</div>
+		        	<div class= "col-md-2 form-group">
+		        		<label for="stock[wh]">Warehouse</label>
+		        		<input class="form-control" type="text" name="stock[wh]" value = "<%= stock.wh %>">
+		        	</div>
+		        	<div class= "col-md-2 form-group">
+		        		<label for="stock[ac]">A/C</label>
+		        		<input class="form-control" type="text" name="stock[ac]" value = "<%= stock.ac%>" required>
+		        	</div>
+		        </div>
+		        	<input type="submit" class="btn btn-lg btn-primary">
+	        </form>
+        	
+    </div>
+
+<% include ./partials/footer %>

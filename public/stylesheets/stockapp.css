@@ -1,0 +1,20 @@
+.delete {
+	display: inline-block;
+	border: none;
+	background-color: transparent;
+}
+
+.delete button {
+	display: inline-block;
+	border: none;
+	
+	text-align: center;
+	
+}
+
+.edit  {
+	text-decoration: none;
+	text-align: center;
+
+}
+
