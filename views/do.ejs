@@ -61,7 +61,7 @@
 		<div class="container" style = "margin-top: 40px;">
 
         	
-        	<form action="/stocks/<%=stock._id%>/do" method="POST">
+        	<form id="myForm" action="/stocks/<%=stock._id%>/do" method="POST">
 	        	<div class= "row">
 	        		<div class= "col-md-2 form-group">
 	        			<label for="do[buyer]">Buyer Name</label>
@@ -166,6 +166,7 @@
 			});
 	        
 	        }*/
+	        
 			function changeHandler(event) {
 			   if ( this.value === 'oneDO' ) {
 			     oneDO();
@@ -179,6 +180,21 @@
 			radios.forEach(function(radio) {
 			   radio.addEventListener('change', changeHandler);
 			});	
+			
+			//validate on submit form
+			
+			$('#myForm').on('submit', function(e){
+		        
+		        var x = parseInt($('input[type=number][name="do[bag]"]').val())
+		        if(x > <%=stock.bpkgs%>){
+		        	return false;
+		        }else if(x <= 0 ){
+		        	return false;
+		        } else {
+		        	return true;
+		        }
+		    });
+			
 		});
 		
 	</script>
