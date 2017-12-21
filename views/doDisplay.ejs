@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Delivery Order</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/deliveryOrder.css">
+
+</head>
+<body>
+    
+    <div class="container">
+        
+        <% if(error && error.length > 0){ %>
+            <div class="alert alert-danger" role="alert">
+                <%= error %>
+            </div>
+        <% } %>
+        <% if(success && success.length > 0){ %>
+            <div class="alert alert-success" role="alert">
+                <%= success %>
+            </div>
+        <% } %>
+    </div>
+    <div class="container">
+    <div class="head">
+  <div >
+    <div id="date-now">DATE : <span><%= dos.date.toString() %></span></div>
+    <div id="d/o-no">D/O NO : <span><%= dos.do_nbr %></span></div>
+  </div>
+    
+  <div>
+    <div class="pull-right">Validity : <span><%= dos.validity %> days</span></div>
+    
+  </div>
+</div>
+<%= %>
+<div id="warehouse">
+  <h3><%= stock.wh %></h3>
+  <table>
+    <tr><td>Name</td><td class="name">ABC</td></tr>
+    <tr><td>Address</td><td class="address">123 road, shalimar bagh</td></tr>
+    <tr><td>Keeper</td><td class="keeper">John</td></tr>
+  </table>
+  <div class="name"></div>
+  <div class="address"></div>
+  <div class="keeper"></div>
+</div>
+
+<div id="buyer-input">
+  <form>
+    <div class="row">
+      <div class="col">
+        <label>Buyer</label>
+        <input type="text" class="form-control" value="<%= dos.buyer %>">
+      </div>
+      <div class="col">
+        <label>Broker</label>
+        <input type="text" class="form-control" value="<%= dos.broker %>">
+      </div>
+      <div class="col">
+        <label>Mode of Payment</label>
+        <input type="text" class="form-control" value="<%= dos.modeOfPayment %>">
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="main">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th scope="col" width="50px">S/NBR</th>
+        <th scope="col">Description</th>
+        <th scope="col" width="23%">Bags</th>
+        <th scope="col" width="130px">Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row"><%=stock.snbr%></th>
+        <td class="desc"><span class="lot"><%=stock.lot%></span> <span="grade"><%=stock.grade%></span>  <span class="garden"><%=stock.garden%></span></td>
+        <td class="bags"><span><%=dos.bag%></span> X <span><%=stock.wpkgs%></span></td>
+        <td class="price"><%=dos.rate%></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div id="order-main">
+  <h4 class="text-center font-weight-bold"><%=dos.bag%></h4>
+  
+</div>
+<div class="notes">
+    <h4 lang="ur" class="text-right">نوٹ</h4>
+    <p lang="ur" class="text-right">جلاس میں وزیر دفاع خرم دستگیر، وزیر داخلہ احسن اقبال ، چیئرمین جوائنٹ چیفس آف اسٹاف کمیٹی، بری،</p>
+    <p lang="ur" class="text-right">جلاس میں وزیر دفاع خرم دستگیر، وزیر داخلہ احسن اقبال ، چیئرمین جوائنٹ چیفس آف اسٹاف کمیٹی، بری،</p>
+    <p lang="ur" class="text-right">جلاس میں وزیر دفاع خرم دستگیر، وزیر داخلہ احسن اقبال ، چیئرمین جوائنٹ چیفس آف اسٹاف کمیٹی، بری،</p>
+</div>
+<div>
+    <h2 class="font-weight-bold">Sign and Stamp:_____________________</h2>
+</div>
+
+</div>

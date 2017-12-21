@@ -162,8 +162,8 @@ app.post("/stocks/:id/do", function(req, res){
                   foundStock.bpkgs -= req.body.do.bag;
                   foundStock.bkgs -= (req.body.do.bag * foundStock.wpkgs);
                   foundStock.save();
-                  req.flash("success", "Successfully added delivery Order");
-                  res.redirect('/stocks');
+                 
+                  res.render('doDisplay', {stock:foundStock, dos:createdDO});
               } 
            });
        } 
