@@ -5,7 +5,8 @@ var express = require("express"),
     flash = require("connect-flash"),
     methodOverride = require("method-override"),
     Stock = require("./models/stock"),
-    DeliveryOrder = require("./models/deliveryOrder");
+    DeliveryOrder = require("./models/deliveryOrder"),
+    Warehouse = require("./models/warehouse");
    
     
 
@@ -135,8 +136,8 @@ app.delete("/stocks/:id", function(req, res){
 
 
 //DO NEW
-app.get("/stocks/:id/do", function(req, res) {
-   Stock.findById(req.params.id, function(err, foundStock){
+app.get("/stocks/:id/do", function(req, res){
+   Stock.findById(req.params.id).populate("deliveryOrder").exec(function(err, foundStock){
        if(err){
            res.redirect("/stocks");
        } else {
@@ -147,27 +148,56 @@ app.get("/stocks/:id/do", function(req, res) {
 
 // D/O Create
 app.post("/stocks/:id/do", function(req, res){
-    //lookup stocks using ID
-    Stock.findById(req.params.id, function(err, foundStock) {
-       if(err || !foundStock){
-           req.flash("erro", "stock not found")
-           res.redirect("back")
-       }else {
-           DeliveryOrder.create(req.body.do, function(err, createdDO){
-              if(err){
-               req.flash("error", "Something went wrong");
-               res.redirect("back");
-              } else {
-                  foundStock.deliveryOrder.push(createdDO);
-                  foundStock.bpkgs -= req.body.do.bag;
-                  foundStock.bkgs -= (req.body.do.bag * foundStock.wpkgs);
-                  foundStock.save();
-                 
-                  res.render('doDisplay', {stock:foundStock, dos:createdDO});
-              } 
-           });
-       } 
-    });
+   
+   var arr = req.body.do.bag.split("+");
+    console.log(arr);
+      //lookup stocks using ID
+        
+               
+               arr.forEach(function(x){
+                   Stock.findById(req.params.id, function(err, foundStock){
+                      
+                       if(err || !foundStock){
+                           req.flash("erro", "stock not found")
+                           res.redirect("back")
+                    }else {
+                        x = parseInt(x.replace(/[^0-9.]/g, ""));
+                       console.log("x is :" + x)
+                        
+                    var dos = {buyer: req.body.do.buyer, broker: req.body.do.broker, validity: req.body.do.validity, rate:req.body.do.rate, modeOfPayment:req.body.do.modeOfPayment, bag: x};
+                    DeliveryOrder.create(dos, function(err, createdDO){
+                      if(err){
+                       req.flash("error", "Something went wrong");
+                       res.redirect("back");
+                      } else {
+                          console.log("bags are : " + createdDO.bag)
+                        // console.log(x + ": " + createdDO)             
+                          console.log("bpkgs : " + foundStock.bpkgs)
+                          foundStock.bpkgs -= createdDO.bag;
+                          console.log("bpkgs after: "+ foundStock.bpkgs)
+                          foundStock.bkgs -= (createdDO.bag * foundStock.wpkgs);
+                          foundStock.deliveryOrder.save();
+                          
+                          
+                          
+                          console.log(foundStock.deliveryOrder)
+                          
+                          
+                          
+                          //res.render('doDisplay', {stock:foundStock, dos:createdDO});
+                      } 
+                   });
+                  
+               }
+               
+                   
+           
+           
+       }); 
+               })
+        req.flash("success", "D/O created successfully");
+           res.redirect("/stocks/" + req.params.id + "/do")
+    
 });
 
 
@@ -175,7 +205,7 @@ app.listen(process.env.PORT, process.env.IP, function(){
   console.log("Stockapp Server has started!!!");
 });
 
-
+//newVal.replace(/[^0-9.]/g, "");
 
 // pdf maker
 
