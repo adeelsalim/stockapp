@@ -176,7 +176,8 @@ app.post("/stocks/:id/do", function(req, res){
                           foundStock.bpkgs -= createdDO.bag;
                           console.log("bpkgs after: "+ foundStock.bpkgs)
                           foundStock.bkgs -= (createdDO.bag * foundStock.wpkgs);
-                          foundStock.deliveryOrder.save();
+                         foundStock.deliveryOrder.push(createdDO);
+                          foundStock.save();
                           
                           
                           
