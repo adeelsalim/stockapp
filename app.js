@@ -4,6 +4,7 @@ var express = require("express"),
     app = express(),
     flash = require("connect-flash"),
     methodOverride = require("method-override"),
+    async = require('async'),
     Stock = require("./models/stock"),
     DeliveryOrder = require("./models/deliveryOrder"),
     Warehouse = require("./models/warehouse");
@@ -77,7 +78,7 @@ app.post("/stocks", function(req, res){
     req.body.stock.kgs = req.body.stock.pkgs * req.body.stock.wpkgs;
     req.body.stock.bpkgs = req.body.stock.pkgs;
     req.body.stock.bkgs = req.body.stock.kgs;
-    
+    req.body.stock.wh = req.body.stock.wh.toUpperCase();
     Stock.create(req.body.stock, function(err){
         if(err){
             console.log(err);
@@ -138,7 +139,8 @@ app.delete("/stocks/:id", function(req, res){
 //DO NEW
 app.get("/stocks/:id/do", function(req, res){
    Stock.findById(req.params.id).populate("deliveryOrder").exec(function(err, foundStock){
-       if(err){
+       if(err || !foundStock){
+           req.flash("error", "Something went wrong please try again")
            res.redirect("/stocks");
        } else {
            res.render("do", {stock: foundStock});
@@ -149,13 +151,14 @@ app.get("/stocks/:id/do", function(req, res){
 // D/O Create
 app.post("/stocks/:id/do", function(req, res){
    
+   
    var arr = req.body.do.bag.split("+");
     console.log(arr);
       //lookup stocks using ID
         
                
-               arr.forEach(function(x){
-                   Stock.findById(req.params.id, function(err, foundStock){
+               async.eachSeries(arr, function(x, next){
+                 Stock.findById(req.params.id, function(err, foundStock){
                       
                        if(err || !foundStock){
                            req.flash("erro", "stock not found")
@@ -176,11 +179,12 @@ app.post("/stocks/:id/do", function(req, res){
                           foundStock.bpkgs -= createdDO.bag;
                           console.log("bpkgs after: "+ foundStock.bpkgs)
                           foundStock.bkgs -= (createdDO.bag * foundStock.wpkgs);
-                         foundStock.deliveryOrder.push(createdDO);
-                          foundStock.save();
-                          
-                          
-                          
+                          foundStock.deliveryOrder.push(createdDO);
+                          foundStock.save(function(err, result){
+                              if(!err){
+                                  next();
+                              }
+                          });
                           console.log(foundStock.deliveryOrder)
                           
                           
@@ -194,13 +198,159 @@ app.post("/stocks/:id/do", function(req, res){
                    
            
            
-       }); 
-               })
+            }); 
+       });
         req.flash("success", "D/O created successfully");
            res.redirect("/stocks/" + req.params.id + "/do")
     
 });
 
+
+//DO VIEW
+
+app.get("/stocks/:id/:d_id/display" , function(req, res) {
+    Stock.findById(req.params.id).populate("deliveryOrder").exec(function(err, foundStock){
+       if(err || !foundStock){
+           req.flash("error", "Stock not found please try again")
+           res.redirect("back");
+       } else {
+           DeliveryOrder.findById(req.params.d_id, function(err, foundDO){
+              if(err || !foundDO){
+                  req.flash("error", "DeliveryOrder not found")
+                  res.redirect("back");
+              } else {
+                  Warehouse.findOne({short: foundStock.wh.toUpperCase()}, function(err, foundWH) {
+                      if(err || !foundWH){
+                          req.flash("error", "Warehouse not found")
+                          res.redirect("back");
+                      }else {
+                          res.render('doDisplay', {stock:foundStock, dos:foundDO, wh: foundWH});
+                      }
+                  })
+                  
+              } 
+           });
+       }
+    }); 
+});
+
+
+
+//DO DESTROY
+
+app.delete("/stocks/:id/:d_id", function(req, res){
+    //findByIdAndRemove
+    Stock.findById(req.params.id, function(err, foundStock) {
+        
+        if(err || !foundStock){
+            req.flash("error", "Something went wrong, Please try");
+            res.redirect("back");  
+        }else {
+            DeliveryOrder.findById(req.params.d_id, function(err, foundDO){
+               if(err){
+                   req.flash("error", "Something went wrong, Please try");
+                   res.redirect("back");
+               } else {
+                   DeliveryOrder.findByIdAndRemove(req.params.d_id, function(err){
+                      if(!err){
+                            foundStock.bpkgs += foundDO.bag;
+                            foundStock.bkgs += (foundDO.bag * foundStock.wpkgs);
+                            foundStock.save();
+                            req.flash("success", "DeliveryOrder Deleted");
+                            res.redirect("/stocks/" + foundStock._id + "/do");       
+                      } 
+                   });
+                   
+               }
+            });    
+        }
+            
+    });
+    
+});
+
+//*******************************************
+//*******************************************
+// WAREHOUSE
+//*******************************************
+//*******************************************
+
+
+// view route
+
+app.get("/warehouse/new", function(req, res) {
+    
+    Warehouse.find({}, function(err, foundWarehouse){
+       if(err){
+           req.flash("error", "Something went wrong");
+           res.redirect("back");
+       } else {
+            res.render("warehouse", {warehouse: foundWarehouse});       
+       }
+    });
+    
+});
+
+
+//post
+app.post("/warehouse/new", function(req, res){
+    req.body.warehouse.short = req.body.warehouse.short.toUpperCase();
+    Warehouse.create(req.body.warehouse, function(err){
+        if(err){
+            req.flash("error", "Something went error please try again");
+            res.redirect("back")
+        } else {
+            req.flash("success", req.body.warehouse.name +  " added successfully");
+            res.redirect("/warehouse/new" );
+        }
+    });  
+});
+
+
+//edit form
+app.get("/warehouse/:id/edit", function(req, res) {
+   Warehouse.findById(req.params.id, function(err, foundWarehouse){
+       if(err){
+           req.flash("error", "Warehouse not found! Please try again");
+           res.redirect("back");
+       } else {
+           
+           res.render("warehouseEdit", {warehouse: foundWarehouse});
+       }
+    }); 
+});
+
+
+// Put update
+app.put("/warehouse/:id", function(req, res){
+   req.body.warehouse.short = req.body.warehouse.short.toUpperCase();
+   Warehouse.findByIdAndUpdate(req.params.id, req.body.warehouse, function(err,updatedWarehouse){
+      if(err){
+          req.flash("error", "Please try again");
+          res.redirect("back");
+          
+      }  else {
+          req.flash("success", updatedWarehouse.name +  " updated!");
+          res.redirect("/warehouse/new");
+          
+      }
+   }); 
+});
+
+// delete route
+
+app.delete("/warehouse/:id", function(req, res){
+   Warehouse.findByIdAndRemove(req.params.id, function(err){
+       if(err){
+          req.flash("error", "Please try again");
+          res.redirect("back");
+       } else {
+           req.flash("success", "Warehouse deleted!");
+          res.redirect("/warehouse/new");
+       }
+   });
+    
+});
 
 app.listen(process.env.PORT, process.env.IP, function(){
   console.log("Stockapp Server has started!!!");
@@ -210,4 +360,43 @@ app.listen(process.env.PORT, process.env.IP, function(){
 
 // pdf maker
 
+/*seedDB();
  
+function seedDB(){
+    var warehouse = [
+            {
+              short: "GB",
+              name: "Javaid Chai Pati",
+              address: "Gulbai",
+              keeper: "Naveed",
+              number: 030012345678
+            },
+            
+            {
+              short: "MM",
+              name: "MM GODOWN",
+              address: "SITE",
+              keeper: "Shehzad",
+              number: 030012345678
+            },
+            {
+              short: "JA",
+              name: "J/ABAD",
+              address: "123 NAWAZ STREET",
+              keeper: "BAZ MOHD",
+              number: 030012345678
+            }
+            
+        ]
+    
+    
+    warehouse.forEach(function(obj){
+       Warehouse.create(obj, function(err, created){
+           if(!err){
+               console.log("warehouse added successfully")
+           }
+       }) 
+    });
+        
+        
+}*/

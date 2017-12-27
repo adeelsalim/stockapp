@@ -60,7 +60,7 @@
 				      <th style="width: 5%">PKGS</th>
 				      <th style="width: 20%">RATE</th>
 				      <th style="width: 5%">DISPLAY</th>
-				      <th style="width: 5%">EDIT</th>
+				      
 				      <th style="width: 5%">DELETE</th>
 				    </tr>
 		  		</thead>
@@ -75,7 +75,7 @@
 				      <td><%= stock.deliveryOrder[i].bag %></td>
 				      <td><%= stock.deliveryOrder[i].rate %></td>
 				      <td><a class="edit btn btn-xs btn-success" href="/stocks/<%= stock._id %>/<%= stock.deliveryOrder[i]._id %>/display"</a><i class="fa fa-pencil-square" aria-hidden="true"></i></a></td>
-				      <td><a class="edit btn btn-xs btn-info" href="/stocks/<%= stock._id %>/<%= stock.deliveryOrder[i]._id%>/edit"><i class="fa fa-indent" aria-hidden="true"></i></a></td>
+				      
 				      <td>
 					  	<form class="delete" method="POST" action="/stocks/<%= stock._id %>/<%= stock.deliveryOrder[i]._id%>?_method=DELETE">
 				              <button class="btn btn-xs btn-danger"><i class="fa fa-minus-square" aria-hidden="true"></i></button>
@@ -139,16 +139,22 @@
 					  	<input  type="radio" name="do-type" value="custom" id="rdSelect1">Custom Number of bags
 					  	
 					  </label>
-					  	
+					  
 	        		</div>
 	        		
 	        	</div>
-	        	
+	        
+	        		
+	        
 	        	<div class="row" style="margin-bottom: 30px;" id="input-type">
 	        		
 	        	</div>
 		        	<input type="submit" class="btn btn-lg btn-primary">
+		        	
+		        	
 	        </form>
+        	
+        	
         	
     </div>
 
@@ -181,16 +187,16 @@
 			
 			
 				function changeHandler(event) {
-			   if ( this.value === 'oneDO' ) {
-			     oneDO();
-			   } else if ( this.value === 'custom' ) {
-			      custom();
-			   } 
-			}
+				   if ( this.value === 'oneDO' ) {
+				     oneDO();
+				   } else if ( this.value === 'custom' ) {
+				      custom();
+				   } 
+				}
 			
 			
 			radios.forEach(function(radio) {
-			   radio.addEventListener('change', changeHandler);
+			   radio.addEventListener("change", changeHandler);
 			});	
 			
 			//validate on submit form
@@ -200,23 +206,27 @@
 				var isChecked = $('#rdSelect').prop('checked');
 				var isChecked1 = $('#rdSelect1').prop('checked');
 				if(!isChecked && !isChecked1 ){
+					$('#message').html('<h4 class="bg-danger">One of the options to enter bag must be selected</h4>').fadeIn().fadeOut(5000);
 					return false;
 				}
 				
 				
 		        if($('input[type=number][name=do[bag]]').prop('checked', 'checked')){
 			        var x = $('input[type=number][name="do[bag]"]').val();
+			        
 			        if(parseInt(x) > <%=stock.bpkgs%>){
-			        	$('#message').html('<h4 class="bg-danger">Packages cannot be greater than balance packages</h4>').fadeOut(3000);
+			        	$('#message').html('<h4 class="bg-danger">Packages cannot be greater than balance packages</h4>').fadeIn().fadeOut(5000);
 			        	return false;
 			        }else if(parseInt(x) <= 0 ){
 			        	console.log("here")
-			        	$('#message').html('<h4 class="bg-danger">Packages entered cannot be less than 0 or less than 0</h4>').fadeOut(3000);
+			        	$('#message').html('<h4 class="bg-danger">Packages entered cannot be less than 0 or less than 0</h4>').fadeIn().fadeOut(5000);
 			        	return false;
 			        } else if(isNaN(x)){
-			        	$('#message').html('<h4 class="bg-danger">Packages cannot be null</h4>').fadeOut(3000);
+			        	$('#message').html('<h4 class="bg-danger">Packages cannot be null</h4>').fadeIn().fadeOut(5000);
 			        	return false;
 			        }else {
+			        	
+			        	
 			        	return true;
 			        }	
 		        } else if($('input[type=text][name=do[bag]]').prop('checked', 'checked')){
@@ -226,14 +236,16 @@
 		        	arr.forEach(function(val){
 		        		var y = val.replace(/[^0-9.]/g, "");
 		        		count += Math.floor(parseInt(y));
+		        		
 		        	});
 		        	if(isNaN(x) || x == "" || x == "0"){
-		        		$('#message').html('<h4 class="bg-danger">Packages cannot be null</h4>').fadeOut(3000);
+		        		$('#message').html('<h4 class="bg-danger">Packages cannot be null</h4>').fadeIn().fadeOut(5000);
 			        	return false;
 		        	}else if(count > <%=stock.bpkgs%> ){
-		        		$('#message').html('<h4 class="bg-danger">Packages cannot be greater than balance packages</h4>').fadeOut(3000);
+		        		$('#message').html('<h4 class="bg-danger">Packages cannot be greater than balance packages</h4>').fadeIn().fadeOut(5000);
 			        	return false;
 		        	}else {
+		        		
 		        		return true;
 		        	}
 		        }

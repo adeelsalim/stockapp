@@ -1,0 +1,37 @@
+<% include ./partials/header %>
+
+<div class="container">
+
+        	<h1 class="text-center">Edit Warehouse</h1>
+        	<form action="/warehouse/<%=warehouse._id%>?_method=PUT" method="POST">
+	        	<div class= "row">
+	        		<div class= "row">
+	        		<div class= "col-md-2 form-group">
+	        			<label for="warehouse[short]">* Short</label>
+	        			<input class="form-control" type="text" name="warehouse[short]" value="<%=warehouse.short%>" required>
+	        		</div>
+	        		<div class= "col-md-2 form-group">
+	        			<label for="warehouse[name]">* Name</label>
+	        			<input class="form-control" type="text" name="warehouse[name]" value="<%=warehouse.name%>" required>
+	        		</div>
+	        		<div class= "col-md-2 form-group">
+	        			<label for="warehouse[address]">Address</label>
+	        			<input class="form-control" type="text" name="warehouse[address]" value="<%= warehouse.address%>">
+	        		</div>
+	        		<div class= "col-md-2 form-group">
+	        			<label for="warehouse[keeper]">Godown Keeper</label>
+	        			<input class="form-control" type="text" name="warehouse[keeper]" value="<%=warehouse.keeper%>">
+	        		</div>
+	        		<div class= "col-md-2 form-group">
+	        			<label for="warehouse[number]">Godown Keeper</label>
+	        			<input class="form-control" type="number" name="warehouse[number]" value="<%=warehouse.number%>">
+	        		</div>
+	        		
+		        </div>
+	        	
+	        		<input type="submit" class="btn btn-lg btn-primary">
+	        </form>
+        	
+    </div>
+
+<% include ./partials/footer %>

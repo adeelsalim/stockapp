@@ -28,3 +28,13 @@ body{
 #main table{
   background-color: #f8f8f8;
 }
+
+.input {
+  font-weight: bold;
+  margin: 5px;
+}
+
+.text {
+  margin-left: 10px;
+  font-size: 1.1em;
+}

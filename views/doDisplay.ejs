@@ -29,7 +29,7 @@
     <div class="container">
     <div class="head">
   <div >
-    <div id="date-now">DATE : <span><%= dos.date.toString() %></span></div>
+    <div id="date-now">DATE : <span><%= dos.date.getDate()%>/<%= dos.date.getMonth()%>/<%= dos.date.getFullYear()%></span></div>
     <div id="d/o-no">D/O NO : <span><%= dos.do_nbr %></span></div>
   </div>
     
@@ -40,11 +40,11 @@
 </div>
 <%= %>
 <div id="warehouse">
-  <h3><%= stock.wh %></h3>
+  <h3><%= wh.name %></h3>
   <table>
-    <tr><td>Godown Keeper</td><td class="name">Naveed</td></tr>
-    <tr><td>Address</td><td class="address">123 road, shalimar bagh</td></tr>
-    <tr><td>Godown Keeper Number:</td><td class="keeper">030012345678</td></tr>
+    <tr><td>Godown Keeper: <span class="text"><%= wh.keeper %></span></td></tr>
+    <tr><td>Address: <span class="text"><%= wh.address %></span></td></tr>
+    <tr><td>Godown Keeper Number: <span class="text"><%= wh.number %></span></td></tr>
   </table>
   <div class="name"></div>
   <div class="address"></div>
@@ -54,17 +54,17 @@
 <div id="buyer-input">
   <form>
     <div class="row">
-      <div class="col">
-        <label>Buyer</label>
-        <input type="text" class="form-control" value="<%= dos.buyer %>">
+      <div class="col-md-4">
+        <label>Buyer: </label>
+        <span class="input"><%= dos.buyer.toUpperCase() %></span>
       </div>
-      <div class="col">
-        <label>Broker</label>
-        <input type="text" class="form-control" value="<%= dos.broker %>">
+      <div class="col-md-4">
+        <label>Broker: </label>
+        <span class="input"><%= dos.broker.toUpperCase() %> days</span>
       </div>
-      <div class="col">
-        <label>Mode of Payment</label>
-        <input type="text" class="form-control" value="<%= dos.modeOfPayment %>">
+      <div class="col-md-4">
+        <label>Mode of Payment: </label>
+        <span class="input"><%= dos.modeOfPayment %> days</span>
       </div>
     </div>
   </form>
@@ -76,7 +76,13 @@
       <tr>
         <th scope="col" width="50px">S/NBR</th>
         <th scope="col">Description</th>
-        <th scope="col" width="23%">Bags</th>
+        <th scope="col" width="23%"> 
+          <% if(stock.cb.toUpperCase() == "B"){ %>
+              BAGS
+          <% } else { %>
+              Cartons
+          <% } %>
+        </th>
         <th scope="col" width="130px">Price</th>
       </tr>
     </thead>
@@ -92,7 +98,7 @@
 </div>
 
 <div id="order-main">
-  <h4 class="text-center font-weight-bold"><%=dos.bag%> BAGS</h4>
+  <h2 class="text-center font-weight-bold"><%=dos.bag%> bags X <%=stock.wpkgs%> kgs</h2>
   
 </div>
 <div class="notes">
