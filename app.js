@@ -9,8 +9,7 @@ var express = require("express"),
     DeliveryOrder = require("./models/deliveryOrder"),
     Warehouse = require("./models/warehouse");
    
-    
-
+var doNbr = 1;
 mongoose.connect('mongodb://localhost/stock_app', { useMongoClient: true });
 mongoose.Promise = global.Promise;
 
@@ -141,7 +140,7 @@ app.get("/stocks/:id/do", function(req, res){
    Stock.findById(req.params.id).populate("deliveryOrder").exec(function(err, foundStock){
        if(err || !foundStock){
            req.flash("error", "Something went wrong please try again")
-           res.redirect("/stocks");
+           res.redirect("back");
        } else {
            res.render("do", {stock: foundStock});
        }
@@ -166,34 +165,38 @@ app.post("/stocks/:id/do", function(req, res){
                     }else {
                         x = parseInt(x.replace(/[^0-9.]/g, ""));
                        console.log("x is :" + x)
-                        
-                    var dos = {buyer: req.body.do.buyer, broker: req.body.do.broker, validity: req.body.do.validity, rate:req.body.do.rate, modeOfPayment:req.body.do.modeOfPayment, bag: x};
-                    DeliveryOrder.create(dos, function(err, createdDO){
-                      if(err){
-                       req.flash("error", "Something went wrong");
-                       res.redirect("back");
-                      } else {
-                          console.log("bags are : " + createdDO.bag)
-                        // console.log(x + ": " + createdDO)             
-                          console.log("bpkgs : " + foundStock.bpkgs)
-                          foundStock.bpkgs -= createdDO.bag;
-                          console.log("bpkgs after: "+ foundStock.bpkgs)
-                          foundStock.bkgs -= (createdDO.bag * foundStock.wpkgs);
-                          foundStock.deliveryOrder.push(createdDO);
-                          foundStock.save(function(err, result){
-                              if(!err){
-                                  next();
-                              }
-                          });
-                          console.log(foundStock.deliveryOrder)
-                          
-                          
-                          
-                          //res.render('doDisplay', {stock:foundStock, dos:createdDO});
-                      } 
-                   });
-                  
-               }
+                       
+                        var dos = {do_nbr: doNbr, buyer: req.body.do.buyer, broker: req.body.do.broker, validity: req.body.do.validity, rate:req.body.do.rate, modeOfPayment:req.body.do.modeOfPayment, bag: x};
+                        DeliveryOrder.create(dos, function(err, createdDO){
+                          if(err){
+                           req.flash("error", "Something went wrong");
+                           res.redirect("back");
+                          } else {
+                              console.log("bags are : " + createdDO.bag)
+                            // console.log(x + ": " + createdDO)             
+                              console.log("bpkgs : " + foundStock.bpkgs)
+                              foundStock.bpkgs -= createdDO.bag;
+                              console.log("bpkgs after: "+ foundStock.bpkgs)
+                              foundStock.bkgs -= (createdDO.bag * foundStock.wpkgs);
+                              foundStock.deliveryOrder.push(createdDO);
+                              foundStock.save(function(err, result){
+                                  if(!err){
+                                      doNbr++;
+                                      next();
+                                  }
+                              });
+                              console.log(foundStock.deliveryOrder)
+                              
+                              
+                              
+                              //res.render('doDisplay', {stock:foundStock, dos:createdDO});
+                          } 
+                       });
+                   
+                                    }
+                              
+                       
+              
                
                    
            
@@ -400,3 +403,4 @@ function seedDB(){
         
         
 }*/
+

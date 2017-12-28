@@ -1,4 +1,6 @@
+
 var mongoose = require("mongoose");
+
 
 var deliveryOrderSchema = mongoose.Schema({
     date: { type: Date, default: Date.now },
@@ -17,5 +19,9 @@ var deliveryOrderSchema = mongoose.Schema({
         ]*/
     
 });
+
+
+
+
 
 module.exports = mongoose.model('DeliveryOrder', deliveryOrderSchema);
